@@ -773,6 +773,28 @@ say_done_2
 }
 #############################################################################################################
 
+755_to_folders(){
+find /var/www/ -type d -print0 | xargs -0 chmod 755
+chown -R www-data:www-data /var/www/
+say_done_2
+}
+
+
+644_to_files(){
+find /var/www/ -type f -print0 | xargs -0 chmod 644
+chown -R www-data:www-data /var/www/
+say_done_2
+}
+
+
+644_755_to_files_and_folder(){
+find /var/www/ -type f -print0 | xargs -0 chmod 644
+find /var/www/ -type d -print0 | xargs -0 chmod 755
+chown -R www-data:www-data /var/www/
+say_done_2
+}
+
+
 
 menu=""
 until [ "$menu" = "10" ]; do
@@ -795,7 +817,10 @@ echo "6. Only start Certbot"
 echo "7. Disable vhost"
 echo "8. Enable vhost"
 echo "9. Remove alias"
-echo "10. Exit"
+echo "10. Change permissions 755 to folders"
+echo "11. Change permissions 644 to files"
+echo "12. Change permissions 755 to folders and 644 to files"
+echo "13. Exit"
 echo
 
 read menu
@@ -841,7 +866,20 @@ enable_vhost
 delete_alias
 ;;
 
+
 10)
+755_to_folders
+;;
+
+11)
+644_to_files
+;;
+
+12)
+644_755_to_files_and_folder
+;;
+
+13)
 break
 ;;
 
