@@ -120,7 +120,7 @@ apacheUser=$(ps -ef | egrep '(httpd|apache2|apache)' | grep -v root | head -n1 |
 email='webmaster@localhost'
 sitesEnabled='/etc/apache2/sites-enabled/'
 sitesAvailable='/etc/apache2/sites-available/'
-userDir='/var/www/'
+userDir='/var/www/html/'
 sitesAvailabledomain=$sitesAvailable$domain.conf
 
 ### don't modify from here unless you know what you are doing ####
@@ -455,7 +455,7 @@ echo ""
 
 
 
-if [ $(/etc/init.d/apache2 status | grep -v grep | grep 'Apache2 is running' | wc -l) > 0 ]
+if [ $(/etc/init.d/apache2 status | grep -v grep | grep 'Apache2 is running' | wc -l) != 0 ]
 then
  echo "Apache server is already installed and running. Exit after 1 sec.."
  sleep 1
