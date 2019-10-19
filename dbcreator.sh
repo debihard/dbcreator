@@ -198,4 +198,4 @@ fi
 
 install_secure_mysql
 create_mysql_user_db
-cat > /root/mysqldata
+cat /root/mysqldata
