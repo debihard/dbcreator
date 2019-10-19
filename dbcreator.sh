@@ -13,7 +13,7 @@ install_secure_mysql(){
     echo -n " configuring MySQL............ "
 
 apt -y install pwgen
-apt -y install gpw    
+apt -y install gpw  
 NEW_MYSQL_PASSWORD=mysql_root_"$(pwgen 12 1)"
 
     #echo -n " Type the new root password: "; read -s NEW_MYSQL_PASSWORD
@@ -118,6 +118,10 @@ userdbpass=dbuser_pass_"$(pwgen 8 1)"
 charset=utf8
 dbname=db_"$(gpw 1 7)"
 
+echo -n " ¿Type Your DataBase Name ?: "; read export_dbname
+
+
+
 # Bash script written by Saad Ismail - me@saadismail.net
 
 # If /root/.my.cnf exists then it won't ask for root password
@@ -199,3 +203,5 @@ fi
 install_secure_mysql
 create_mysql_user_db
 cat /root/mysqldata
+
+mysql --user=$usernamedb --password=$userdbpass $dbname < /root/$export_dbname
