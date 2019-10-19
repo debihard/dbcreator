@@ -1,5 +1,5 @@
 #!/bin/bash
-# usage:  wget -O createdb https://raw.githubusercontent.com/debihard/dbcreator/master/createdb.sh && chmod +x createdb
+# usage:  wget -O createdb https://raw.githubusercontent.com/debihard/dbcreator/master/dbcreator.sh && chmod +x createdb
 # Install, Configure and Optimize MySQL
 install_secure_mysql(){
     clear
