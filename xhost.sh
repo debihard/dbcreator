@@ -524,7 +524,6 @@ echo ""
 
 DIRECTORY=/usr/local/share/GeoIP
 if [ -d "$DIRECTORY" ]; then
-then
  echo "GeoIP is already exist. Exit after 1 sec.."
  sleep 1
  exit 0
