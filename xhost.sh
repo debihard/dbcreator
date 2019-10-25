@@ -547,8 +547,15 @@ fi
 #tar -xvf GeoLite2-City*
 #mv GeoLite2-City*/GeoLite2-City.mmdb /usr/local/share/GeoIP
 
-if grep -xqFe "  GeoIPEnable On" /etc/apache2/mods-available/geoip.conf
-then
+if grep -xq "  GeoIPEnable On" /etc/apache2/mods-available/geoip.conf ; then
+  # code for if it exists
+
+ echo "Apache geoip module is already installed and running. Script will stop after 1 seconds"
+  sleep 1
+ exit 0
+
+else
+
 sed -i -e 's/GeoIPEnable Off/GeoIPEnable On/g' /etc/apache2/mods-available/geoip.conf;
 sed -i -e 's/#GeoIPDBFile \/usr\/share\/GeoIP\/GeoIP.dat/GeoIPDBFile \/usr\/share\/GeoIP\/GeoIP.dat/g' /etc/apache2/mods-available/geoip.conf;
 sed -i -e 's/<\/IfModule>/GeoIPScanProxyHeaders On\n<\/IfModule>/g' /etc/apache2/mods-available/geoip.conf;
@@ -564,10 +571,7 @@ echo "9 10 * * 4  /usr/bin/geoipupdate" >> /var/spool/cron/root;
 crontab -u root /var/spool/cron/root;
 service cron reload;
 cd;
-else
-  echo "Apache geoip module is already installed and running. Script will stop after 1 seconds"
-  sleep 1
- exit 0
+
 fi
 
 say_done_2
