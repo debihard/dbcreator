@@ -508,7 +508,72 @@ fi
 say_done_2
 }
 #############################################################################################################
+#############################################################################################################
 
+install_maxmind(){
+clear
+f_banner
+
+echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
+   echo -e "\e[93m[+]\e[00m Install maxmind geobase"
+   echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
+echo ""
+spinner
+echo ""
+
+
+DIRECTORY=/usr/local/share/GeoIP
+if [ -d "$DIRECTORY" ]; then
+then
+ echo "GeoIP is already exist. Exit after 1 sec.."
+ sleep 1
+ exit 0
+else
+update_system
+apt-get install software-properties-common -y;
+add-apt-repository universe -y;
+add-apt-repository ppa:maxmind/ppa -y;
+apt-get update -y;
+apt-get install libmaxminddb0 libmaxminddb-dev mmdb-bin libapache2-mod-geoip -y;
+apt-get install geoipupdate -y;
+
+wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz;
+tar -xvf GeoLite2-Country*;
+mkdir /usr/local/share/GeoIP;
+mv GeoLite2-Country*/GeoLite2-Country.mmdb /usr/local/share/GeoIP;
+fi
+
+#add  city base
+#wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz
+#tar -xvf GeoLite2-City*
+#mv GeoLite2-City*/GeoLite2-City.mmdb /usr/local/share/GeoIP
+
+if grep -xqFe "  GeoIPEnable On" /etc/apache2/mods-available/geoip.conf
+then
+sed -i -e 's/GeoIPEnable Off/GeoIPEnable On/g' /etc/apache2/mods-available/geoip.conf;
+sed -i -e 's/#GeoIPDBFile \/usr\/share\/GeoIP\/GeoIP.dat/GeoIPDBFile \/usr\/share\/GeoIP\/GeoIP.dat/g' /etc/apache2/mods-available/geoip.conf;
+sed -i -e 's/<\/IfModule>/GeoIPScanProxyHeaders On\n<\/IfModule>/g' /etc/apache2/mods-available/geoip.conf;
+echo -e '<IfModule mod_geoip.c>\nGeoIPEnable On\nGeoIPDBFile /usr/share/GeoIP/GeoIP.dat Standard\nGeoIPEnableUTF8 On\n</IfModule>' >> /etc/apache2/apache2.conf;
+
+a2enmod rewrite;
+a2enmod geoip;
+/etc/init.d/apache2 restart;
+service apache2 restart;
+
+#autoupdate geoip base
+echo "9 10 * * 4  /usr/bin/geoipupdate" >> /var/spool/cron/root;
+crontab -u root /var/spool/cron/root;
+service cron reload;
+cd;
+else
+  echo "Apache geoip module is already installed and running. Script will stop after 1 seconds"
+  sleep 1
+ exit 0
+fi
+
+say_done_2
+}
+#############################################################################################################
 delete_alias(){
 clear
 f_banner
@@ -820,7 +885,8 @@ echo "9. Remove alias"
 echo "10. Change permissions 755 to folders"
 echo "11. Change permissions 644 to files"
 echo "12. Change permissions 755 to folders and 644 to files"
-echo "13. Exit"
+echo "13. install maxmind geobase"
+echo "14. Exit"
 echo
 
 read menu
@@ -880,6 +946,10 @@ delete_alias
 ;;
 
 13)
+install_maxmind
+;;
+
+14)
 break
 ;;
 
